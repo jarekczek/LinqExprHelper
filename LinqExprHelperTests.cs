@@ -79,7 +79,6 @@ namespace jarekczek
             var sumExpr = LinqExprHelper.NewExpr((int x) => x + 1);
             var mulExpr = LinqExprHelper.NewExpr((int x) => 2 * x);
             var combExpr = LinqExprHelper.NewExpr((int x, int y, int z) => y + z);
-            Console.WriteLine("expr: " + combExpr.NodeType);
             int result = (int)combExpr
                 .ReplacePar("y", sumExpr.Body)
                 .ReplacePar("z", mulExpr.Body)
@@ -93,7 +92,6 @@ namespace jarekczek
             var sumExpr = LinqExprHelper.NewExpr((int x) => x + 1);
             var mulExpr = LinqExprHelper.NewExpr((int x) => 2 * x);
             var combExpr = LinqExprHelper.NewExpr((int y, int z, int x) => y + z);
-            Console.WriteLine("expr: " + combExpr.NodeType);
             int result = (int)combExpr
                 .ReplacePar("y", sumExpr.Body)
                 .ReplacePar("z", mulExpr.Body)

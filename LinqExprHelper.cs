@@ -81,7 +81,6 @@ namespace jarekczek
             {
                 if (dict == null)
                   throw new InvalidOperationException("Use Process method instead.");
-                Console.WriteLine("visiting " + node.NodeType);
                 return base.Visit(node);
             }
         }
@@ -137,10 +136,8 @@ namespace jarekczek
             var parToRepl = expr.Parameters.Where(p => p.Name.Equals(parName)).First();
             var newPars = expr.Parameters.Where(p => !p.Name.Equals(parName)).ToArray();
             var vis = new ReplVisitor();
-            Console.WriteLine("replacing par: " + parToRepl);
             vis.PrepareReplace(parToRepl, replacementExpr);
             var newExprBody = vis.Visit(expr.Body);
-            Console.WriteLine("new body: " + newExprBody);
             return Expression.Lambda(newExprBody, newPars).UnifyParametersByName();
         }
     }
