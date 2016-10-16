@@ -14,7 +14,7 @@ from different scopes. Workaround the exception:
 "System.InvalidOperationException : variable 'x' of type
 'System.Int32' referenced from scope '', but it is not defined"
 
-* `LinqExprHelper.ReplacePar() -
+* `LinqExprHelper.ReplacePar()` -
 Combine linq expressions easily.
 
 # Samples
