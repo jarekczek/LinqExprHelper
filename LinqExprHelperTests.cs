@@ -24,6 +24,7 @@ SOFTWARE.
 // I used NuGet Package Manager to get: NUnit, NUnit3TestAdapter.
 
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using NUnit.Framework;
 
@@ -31,6 +32,34 @@ using NUnit.Framework;
 
 namespace jarekczek
 {
+    public class Rec
+    {
+        public int x;
+        public int y;
+
+        /*
+        public static override bool operator ==(Rec r1, Rec r2)
+        {
+            return r1.x == r2.x && r1.y == r2.y;
+        }
+
+        public static override bool operator !=(Rec r1, Rec r2)
+        {
+            return !(r1 == r2);
+        }
+        */
+
+        public override bool Equals(object o2)
+        {
+            var r2 = o2 as Rec;
+            if (r2 != null)
+                return x == r2.x && y == r2.y;
+            else
+                return base.Equals(o2);
+        }
+    }
+
+
     public class LinqExprHelperTests
     {
         [Test]
@@ -98,5 +127,70 @@ namespace jarekczek
                 .Compile().DynamicInvoke(5);
             Assert.AreEqual(16, result);
         }
+
+        [Test]
+        public static void UseCombiningInLinqWhere()
+        {
+            var aRec = new Rec[]
+            {
+                new Rec { x = 0, y = 1 },
+                new Rec { x = 1, y = 2 },
+                new Rec { x = 2, y = 3 }
+            };
+            var exprFun = LinqExprHelper.NewExpr( (int z) => z * z + 3);
+            // Now in dynamic way make the function operate on r.x and r.y,
+            // without rewriting its body.
+            // NewExpr helper allows to skip Expression<Func<?>> part.
+            var exprFunX = exprFun.ReplacePar("z",
+                LinqExprHelper.NewExpr((Rec r) => r.x).Body);
+            // An alternative way to obtain the same expression:
+            var exprFunY = exprFun.ReplacePar("z",
+                ((Expression<Func<Rec, int>>)(r => r.y)).Body);
+            var exprWhere = LinqExprHelper.NewExpr(
+                (Rec r, int funX, int funY) => funX == 4 || funY == 4 );
+            var exprWhereFinal = exprWhere
+                .ReplacePar("funX", exprFunX.Body)
+                .ReplacePar("funY", exprFunY.Body);
+            // To use the query in a select, it must be strongly typed.
+            var exprWhereTyped = (Func<Rec, bool>)exprWhereFinal.Compile();
+            var aRes = aRec.Where(exprWhereTyped).ToList();
+            Assert.AreEqual(2, aRes.Count);
+            Assert.AreEqual(aRes[0], new Rec { x = 0, y = 1 });
+            Assert.AreEqual(aRes[1], new Rec { x = 1, y = 2 });
+        }
+
+        [Test]
+        public static void UseCombiningInLinqProjection()
+        {
+            var aRec = new Rec[]
+            {
+                new Rec { x = 0, y = 1 },
+                new Rec { x = 1, y = 2 },
+                new Rec { x = 2, y = 3 }
+            };
+            var exprFun = LinqExprHelper.NewExpr((int z) => z * z - z);
+            // Now in dynamic way make the function operate on r.x and r.y,
+            // without rewriting its body.
+            var exprFunX = exprFun.ReplacePar("z",
+                LinqExprHelper.NewExpr((Rec r) => r.x).Body);
+            // An alternative way to obtain the same expression:
+            var exprFunY = exprFun.ReplacePar("z",
+                ((Expression<Func<Rec, int>>) (r => r.y)).Body);
+            // Prepare a projection query, using parameters fun?, which
+            // will be later in next statement.
+            var exprQuery = LinqExprHelper.NewExpr(
+                (Rec r, int funX, int funY) => new Rec { x = funX, y = funY });
+            var exprQueryFinal = exprQuery
+                .ReplacePar("funX", exprFunX.Body)
+                .ReplacePar("funY", exprFunY.Body);
+            // To use the query in a select, it must be strongly typed.
+            var exprQueryTyped = (Func<Rec, Rec>)exprQueryFinal.Compile();
+            var aRes = aRec.Select(exprQueryTyped).ToList();
+            Assert.AreEqual(3, aRes.Count);
+            Assert.AreEqual(aRes[0], new Rec { x = 0, y = 0 }, "0");
+            Assert.AreEqual(aRes[1], new Rec { x = 0, y = 2 }, "1");
+            Assert.AreEqual(aRes[2], new Rec { x = 2, y = 6 }, "2");
+        }
+
     }
 }
