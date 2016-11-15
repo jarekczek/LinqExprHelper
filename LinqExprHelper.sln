@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqExprHelper", "LinqExprHelper.csproj", "{CE2D60BD-7E4B-49DE-A395-3F8E59CD537C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinqExprHelperTest", "LinqExprHelperTest\LinqExprHelperTest.csproj", "{7F8559A7-6E5E-4CE6-94C9-472B720AD69E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{CE2D60BD-7E4B-49DE-A395-3F8E59CD537C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CE2D60BD-7E4B-49DE-A395-3F8E59CD537C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CE2D60BD-7E4B-49DE-A395-3F8E59CD537C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F8559A7-6E5E-4CE6-94C9-472B720AD69E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F8559A7-6E5E-4CE6-94C9-472B720AD69E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F8559A7-6E5E-4CE6-94C9-472B720AD69E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F8559A7-6E5E-4CE6-94C9-472B720AD69E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
